@@ -128,6 +128,7 @@ resource "aws_route_table_association" "private_subnet_association" {
 resource "aws_instance" "public_instance" {
   ami           = "ami-053b0d53c279acc90" # Change to your desired AMI
   instance_type = "t2.micro"
+  vpc_id = aws_vpc.my_vpc.id
   subnet_id     = aws_subnet.public_subnets[0].id # Change to the desired public subnet index
   tags = {
     Name = "Public-EC2-Instance"
@@ -138,6 +139,7 @@ resource "aws_instance" "public_instance" {
 resource "aws_instance" "private_instance" {
   ami           = "ami-053b0d53c279acc90" # Change to your desired AMI
   instance_type = "t2.micro"
+  vpc_id = aws_vpc.my_vpc.id
   subnet_id     = aws_subnet.private_subnets[0].id # Change to the desired private subnet index
   tags = {
     Name = "Private-EC2-Instance"
