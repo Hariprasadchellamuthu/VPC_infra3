@@ -19,7 +19,7 @@ pipeline {
             steps {
                 script {
                     dir("terraform") {
-                        checkout([$class: 'GitSCM', branches: [[name: 'main']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/Hariprasadchellamuthu/VPC_terraform.git']]])
+                        checkout([$class: 'GitSCM', branches: [[name: 'main']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/Hariprasadchellamuthu/VPC_Infa2.git']]])
                     }
                 }
             }
