@@ -123,3 +123,23 @@ resource "aws_route_table_association" "private_subnet_association" {
   subnet_id    = element(aws_subnet.private_subnets.*.id, count.index)
   route_table_id = aws_route_table.private.id
 }
+
+# Create an EC2 instance in the public subnet
+resource "aws_instance" "public_instance" {
+  ami           = "ami-05fa00d4c63e32376" # Change to your desired AMI
+  instance_type = "t2.micro"
+  subnet_id     = aws_subnet.public_subnets[0].id # Change to the desired public subnet index
+  tags = {
+    Name = "Public-EC2-Instance"
+  }
+}
+
+# Create an EC2 instance in the private subnet
+resource "aws_instance" "private_instance" {
+  ami           = "ami-05fa00d4c63e32376" # Change to your desired AMI
+  instance_type = "t2.micro"
+  subnet_id     = aws_subnet.private_subnets[0].id # Change to the desired private subnet index
+  tags = {
+    Name = "Private-EC2-Instance"
+  }
+}
