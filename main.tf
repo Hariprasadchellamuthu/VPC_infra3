@@ -124,11 +124,66 @@ resource "aws_route_table_association" "private_subnet_association" {
   route_table_id = aws_route_table.private.id
 }
 
+# Create security groups for public and private instances
+resource "aws_security_group" "public_sg" {
+  name        = "public-sg"
+  description = "Security group for public instances"
+  vpc_id      = aws_vpc.my_vpc.id
+
+  # Define inbound and outbound rules as needed
+  # Example: Allow SSH from anywhere
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port   = 8080
+    to_port     = 8080
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+resource "aws_security_group" "private_sg" {
+  name        = "private-sg"
+  description = "Security group for private instances"
+  vpc_id      = aws_vpc.my_vpc.id
+
+  # Define inbound and outbound rules as needed
+  # Example: Allow outbound traffic to the internet
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  # Add more rules as needed
+}
+
 # Create an EC2 instance in the public subnet
 resource "aws_instance" "public_instance" {
   ami           = "ami-053b0d53c279acc90" # Change to your desired AMI
   instance_type = "t2.micro"
   subnet_id     = aws_subnet.public_subnets[0].id # Change to the desired public subnet index
+  security_groups = [aws_security_group.public_sg.id]
   tags = {
     Name = "Public-EC2-Instance"
   }
@@ -139,6 +194,7 @@ resource "aws_instance" "private_instance" {
   ami           = "ami-053b0d53c279acc90" # Change to your desired AMI
   instance_type = "t2.micro"
   subnet_id     = aws_subnet.private_subnets[0].id # Change to the desired private subnet index
+  security_groups = [aws_security_group.private_sg.id]
   tags = {
     Name = "Private-EC2-Instance"
   }
