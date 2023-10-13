@@ -191,7 +191,7 @@ resource "aws_instance" "public_instance" {
     connection {
       type     = "ssh"
       user     = "ec2-user"  # Replace with the appropriate SSH user for your AMI
-      private_key = file("home/ec2-user/PK.ppk")  # Replace with the path to your private key
+      private_key = file("home/ec2-user/PK1.ppk")  # Replace with the path to your private key
       host     = self.public_ip  # This assumes that your EC2 instance has a public IP
     }
     inline = [
