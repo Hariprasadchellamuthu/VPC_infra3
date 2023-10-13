@@ -206,7 +206,7 @@ resource "aws_instance" "public_instance" {
     connection {
       type        = "ssh"
       user        = "ubuntu"  # The user for the Ubuntu AMI
-      private_key = file("path/to/your/private/key.pem")
+      private_key = file("home/ubuntu/key1.pem")
     }
   }
 }
