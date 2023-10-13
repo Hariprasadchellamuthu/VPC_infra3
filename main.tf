@@ -188,25 +188,26 @@ resource "aws_instance" "public_instance" {
     Name = "Public-EC2-Instance"
   }
   provisioner "remote-exec" {
-    connection {
-      type     = "ssh"
-      user     = "ec2-user"  # Replace with the appropriate SSH user for your AMI
-      private_key = file("home/ec2-user/PK1.ppk")  # Replace with the path to your private key
-      host     = self.public_ip  # This assumes that your EC2 instance has a public IP
-    }
+
     inline = [
-      "sudo yum update -y",
-      "sudo yum install -y java-1.8.0-openjdk",  # Install Java
-      "sudo wget -O /etc/yum.repos.d/jenkins.repo https://pkg.jenkins.io/redhat/jenkins.repo",
-      "sudo rpm --import https://pkg.jenkins.io/redhat/jenkins.io.key",
-      "sudo yum install -y jenkins",  # Install Jenkins
+      "sudo apt-get update",
+      "sudo apt-get install -y openjdk-8-jdk",  # Install Java for Ubuntu
+      "sudo wget -q -O - https://pkg.jenkins.io/debian/jenkins.io.key | sudo apt-key add -",
+      'echo "deb http://pkg.jenkins.io/debian-stable binary/" | sudo tee -a /etc/apt/sources.list',
+      "sudo apt-get update",
+      "sudo apt-get install -y jenkins",  # Install Jenkins
       "sudo systemctl start jenkins",  # Start Jenkins
       "sudo systemctl enable jenkins",  # Enable Jenkins to start on boot
-      "sudo wget https://releases.hashicorp.com/terraform/0.12.31/terraform_0.12.31_linux_amd64.zip",
-      "sudo unzip terraform_0.12.31_linux_amd64.zip",
+      "wget https://releases.hashicorp.com/terraform/0.12.31/terraform_0.12.31_linux_amd64.zip",
+      "unzip terraform_0.12.31_linux_amd64.zip",
       "sudo mv terraform /usr/local/bin/",  # Install Terraform
       "rm terraform_0.12.31_linux_amd64.zip"  # Clean up downloaded files
     ]
+    connection {
+      type        = "ssh"
+      user        = "ubuntu"  # The user for the Ubuntu AMI
+      private_key = file("path/to/your/private/key.pem")
+    }
   }
 }
 
