@@ -187,6 +187,21 @@ resource "aws_instance" "public_instance" {
   tags = {
     Name = "Public-EC2-Instance"
   }
+  provisioner "remote-exec" {
+    inline = [
+      "sudo yum update -y",
+      "sudo yum install -y java-1.8.0-openjdk",  # Install Java
+      "sudo wget -O /etc/yum.repos.d/jenkins.repo https://pkg.jenkins.io/redhat/jenkins.repo",
+      "sudo rpm --import https://pkg.jenkins.io/redhat/jenkins.io.key",
+      "sudo yum install -y jenkins",  # Install Jenkins
+      "sudo systemctl start jenkins",  # Start Jenkins
+      "sudo systemctl enable jenkins",  # Enable Jenkins to start on boot
+      "sudo wget https://releases.hashicorp.com/terraform/0.12.31/terraform_0.12.31_linux_amd64.zip",
+      "sudo unzip terraform_0.12.31_linux_amd64.zip",
+      "sudo mv terraform /usr/local/bin/",  # Install Terraform
+      "rm terraform_0.12.31_linux_amd64.zip"  # Clean up downloaded files
+    ]
+  }
 }
 
 # Create an EC2 instance in the private subnet
@@ -198,4 +213,5 @@ resource "aws_instance" "private_instance" {
   tags = {
     Name = "Private-EC2-Instance"
   }
+
 }
