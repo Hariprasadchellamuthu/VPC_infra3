@@ -190,18 +190,14 @@ resource "aws_instance" "public_instance" {
   provisioner "remote-exec" {
 
     inline = [
-      "sudo apt-get update",
-      "sudo apt-get install -y openjdk-8-jdk",  # Install Java for Ubuntu
-      "sudo wget -q -O - https://pkg.jenkins.io/debian/jenkins.io.key | sudo apt-key add -",
-      "echo "deb http://pkg.jenkins.io/debian-stable binary/\" | sudo tee -a /etc/apt/sources.list",
+      "sudo apt update",
+      "sudo apt install openjdk-8-jdk",  # Install Java for Ubuntu
+      "curl -fsSL https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key | sudo tee \ /usr/share/keyrings/jenkins-keyring.asc > /dev/null",
+      "echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] \ https://pkg.jenkins.io/debian-stable binary/ | sudo tee \ /etc/apt/sources.list.d/jenkins.list > /dev/null",
       "sudo apt-get update",
       "sudo apt-get install -y jenkins",  # Install Jenkins
       "sudo systemctl start jenkins",  # Start Jenkins
       "sudo systemctl enable jenkins",  # Enable Jenkins to start on boot
-      "wget https://releases.hashicorp.com/terraform/0.12.31/terraform_0.12.31_linux_amd64.zip",
-      "unzip terraform_0.12.31_linux_amd64.zip",
-      "sudo mv terraform /usr/local/bin/",  # Install Terraform
-      "rm terraform_0.12.31_linux_amd64.zip"  # Clean up downloaded files
     ]
     connection {
       type        = "ssh"
