@@ -203,6 +203,7 @@ resource "aws_instance" "public_instance" {
       type        = "ssh"
       user        = "ubuntu"  # The user for the Ubuntu AMI
       private_key = file("/home/ubuntu/PK1.ppk")
+      host        = aws_instance.public_instance.public_ip
     }
   }
 }
