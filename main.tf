@@ -178,10 +178,16 @@ resource "aws_security_group" "private_sg" {
   # Add more rules as needed
 }
 
+resource "aws_key_pair" "my_key_pair" {
+  key_name   = "my-key-pair"
+  public_key = file("home/ec2-user/publickey1.pem")
+}
+
 # Create an EC2 instance in the public subnet
 resource "aws_instance" "public_instance" {
   ami           = "ami-053b0d53c279acc90" # Change to your desired AMI
   instance_type = "t2.micro"
+  key_name      = aws_key_pair.my_key_pair.my-key-pair
   subnet_id     = aws_subnet.public_subnets[0].id # Change to the desired public subnet index
   security_groups = [aws_security_group.public_sg.id]
   tags = {
@@ -203,7 +209,7 @@ resource "aws_instance" "public_instance" {
       type     = "ssh"
       user     = "ubuntu"  # The default username for Ubuntu instances
        host     = aws_instance.public_instance.public_ip
-      private_key = file("~/.ssh/PK1.ppk")  # Replace with your private key file
+      private_key = file("home/ec2-user/publickey1.pem")  # Replace with your private key file
     }
   
   }
