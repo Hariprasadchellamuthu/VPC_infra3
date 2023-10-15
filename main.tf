@@ -199,12 +199,7 @@ resource "aws_instance" "public_instance" {
       "sudo systemctl start jenkins",  # Start Jenkins
       "sudo systemctl enable jenkins",  # Enable Jenkins to start on boot
     ]
-    connection {
-      type        = "ssh"
-      user        = "ubuntu"  # The user for the Ubuntu AMI
-      private_key = file("/home/ubuntu/PK1.ppk")
-      host        = aws_instance.public_instance.public_ip
-    }
+
   }
 }
 
