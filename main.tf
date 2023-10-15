@@ -180,7 +180,7 @@ resource "aws_security_group" "private_sg" {
 
 resource "aws_key_pair" "my_key_pair" {
   key_name   = "my-key-pair"
-  public_key = file("home/ec2-user/publickey1.pem")
+  public_key = file("~/.ssh/PK1.ppk")
 }
 
 # Create an EC2 instance in the public subnet
@@ -209,7 +209,7 @@ resource "aws_instance" "public_instance" {
       type     = "ssh"
       user     = "ubuntu"  # The default username for Ubuntu instances
        host     = aws_instance.public_instance.public_ip
-      private_key = file("home/ec2-user/publickey1.pem")  # Replace with your private key file
+      private_key = file("~/.ssh/PK1.ppk")  # Replace with your private key file
     }
   
   }
