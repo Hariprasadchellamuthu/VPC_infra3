@@ -199,7 +199,12 @@ resource "aws_instance" "public_instance" {
       "sudo systemctl start jenkins",  # Start Jenkins
       "sudo systemctl enable jenkins",  # Enable Jenkins to start on boot
     ]
-
+    connection {
+      type     = "ssh"
+      user     = "ubuntu"  # The default username for Ubuntu instances
+      private_key = file("~/.ssh/PK1.ppk")  # Replace with your private key file
+    }
+  
   }
 }
 
