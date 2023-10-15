@@ -202,6 +202,7 @@ resource "aws_instance" "public_instance" {
     connection {
       type     = "ssh"
       user     = "ubuntu"  # The default username for Ubuntu instances
+       host     = aws_instance.public_instances.public_ip
       private_key = file("~/.ssh/PK1.ppk")  # Replace with your private key file
     }
   
