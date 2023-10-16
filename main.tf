@@ -178,21 +178,26 @@ resource "aws_security_group" "private_sg" {
   # Add more rules as needed
 }
 
-data "aws_ami" "ubuntu" {
-    most_recent = true
+data "aws_ami" "ubuntu22" {
+  most_recent = true
+  owners      = ["amazon"]
+  
+  filter {
+    name   = "name"
+    values = ["ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-*"]
+  }
 
-    filter {
-        name   = "name"
-        values = ["ubuntu/images/hvm-ssd/ubuntu-bionic-18.04-amd64-server-*"]
-    }
-     owners = ["376227379200"]
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
 }
 
 
 
 # Create an EC2 instance in the public subnet
 resource "aws_instance" "public_instance" {
-  ami           = data.aws_ami.ubuntu.id
+  ami           = data.aws_ami.ubuntu22.id
   instance_type = "t2.micro"
   subnet_id     = aws_subnet.public_subnets[0].id # Change to the desired public subnet index
   security_groups = [aws_security_group.public_sg.id]
