@@ -220,7 +220,7 @@ resource "aws_instance" "public_instance" {
 
     provisioner "remote-exec" {
       inline = [
-          "sudo chmod +x /tmp/install_jen.sh"
+          "sudo chmod +x /tmp/install_jen.sh",
           "sh /tmp/install_jen.sh"
       ]
     }
