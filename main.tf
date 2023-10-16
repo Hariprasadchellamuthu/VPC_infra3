@@ -209,7 +209,7 @@ resource "aws_instance" "public_instance" {
       type     = "ssh"
       user     = "ubuntu"  # The default username for Ubuntu instances
       host     = aws_instance.public_instance.public_ip
-      private_key = file("/jk/pk.pem")  # Replace with your private key file
+      private_key = file("home/ubuntu/.ssh/PK1.pem")  # Replace with your private key file
     }
 
     provisioner "file" {
