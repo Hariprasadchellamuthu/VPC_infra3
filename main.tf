@@ -228,9 +228,7 @@ resource "aws_instance" "public_instance" {
     depends_on = [aws_instance.public_instance]  
 }
 
-output "jenkins_url" {
-      value = join ("", ["http://", aws_instance.public_instance.public_ip, ":", "8080"])
-}
+
 
 # Create an EC2 instance in the private subnet
 resource "aws_instance" "private_instance" {
@@ -242,4 +240,8 @@ resource "aws_instance" "private_instance" {
     Name = "Private-EC2-Instance"
   }
 
+}
+
+output "jenkins_url" {
+      value = join ("", ["http://", aws_instance.public_instance.public_ip, ":", "8080"])
 }
