@@ -180,18 +180,18 @@ resource "aws_security_group" "private_sg" {
 
 data "aws_ami" "ubuntu" {
     most_recent = true
+    owners      = ["amazon"]
+
+    filter {
+        name   = "owners-alias"
+        values = ["amazon"]
+    }
 
     filter {
         name   = "name"
-        values = ["ubuntu/images/hvm-ssd/ubuntu-xenial-16.04-amd64-server-*"]
+        values = ["ubuntu-xenial-16.04-amd64-server-*"]
     }
 
-    filter {
-        name   = "virtualization-type"
-        values = ["hvm"]
-    }
-
-    owners = ["amazon"] 
 }
 
 
