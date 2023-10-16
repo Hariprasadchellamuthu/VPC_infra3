@@ -202,7 +202,7 @@ resource "aws_instance" "public_instance" {
   instance_type = "t2.micro"
   subnet_id     = aws_subnet.public_subnets[0].id # Change to the desired public subnet index
   security_groups = [aws_security_group.public_sg.id]
-  key_name        = pk.pem
+  key_name        = PK1.ppk
   tags = {
     Name = "Public-EC2-Instance"
   }
