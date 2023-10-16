@@ -178,37 +178,58 @@ resource "aws_security_group" "private_sg" {
   # Add more rules as needed
 }
 
+data "aws_ami" "ubuntu" {
+    most_recent = true
+
+    filter {
+        name   = "name"
+        values = ["ubuntu/images/hvm-ssd/ubuntu-xenial-16.04-amd64-server-*"]
+    }
+
+    filter {
+        name   = "virtualization-type"
+        values = ["hvm"]
+    }
+
+    owners = ["amazon"] 
+}
+
 
 
 # Create an EC2 instance in the public subnet
 resource "aws_instance" "public_instance" {
-  ami           = "ami-053b0d53c279acc90" # Change to your desired AMI
+  ami           = aws_ami.ubuntu.id
   instance_type = "t2.micro"
   subnet_id     = aws_subnet.public_subnets[0].id # Change to the desired public subnet index
   security_groups = [aws_security_group.public_sg.id]
+  key_name        = pk.pem
   tags = {
     Name = "Public-EC2-Instance"
   }
-  provisioner "remote-exec" {
-
-    inline = [
-      "sudo apt update",
-      "sudo apt install openjdk-8-jdk",  # Install Java for Ubuntu
-      "curl -fsSL https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key | sudo tee /usr/share/keyrings/jenkins-keyring.asc > /dev/null",
-      "echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] \\ https://pkg.jenkins.io/debian-stable binary/ | sudo tee \\ /etc/apt/sources.list.d/jenkins.list > /dev/null",
-      "sudo apt-get update",
-      "sudo apt-get install -y jenkins",  # Install Jenkins
-      "sudo systemctl start jenkins",  # Start Jenkins
-      "sudo systemctl enable jenkins",  # Enable Jenkins to start on boot
-    ]
     connection {
       type     = "ssh"
       user     = "ubuntu"  # The default username for Ubuntu instances
-       host     = aws_instance.public_instance.public_ip
+      host     = aws_instance.public_instance.public_ip
       private_key = file("/jk/pk.pem")  # Replace with your private key file
     }
-  
+
+    provisioner "file" {
+      source      = "/jk/Scripts/install_jen.sh
+      destination = "/tmp/install_jen.sh"
   }
+
+    provisioner "remote-exec" {
+      inline = [
+          "sudo chmod +x /tmp/install_jen.sh"
+          "sh /tmp/install_jen.sh"
+      ]
+    }
+
+    depends_on = [aws_instance.public_instance]  
+}
+
+output "jenkins_url" {
+  value = join ("", ["http://", aws_instance.public_instance.public_ip, ":", "8080"])
 }
 
 # Create an EC2 instance in the private subnet
