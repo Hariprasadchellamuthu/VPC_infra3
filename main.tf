@@ -180,18 +180,19 @@ resource "aws_security_group" "private_sg" {
 
 data "aws_ami" "ubuntu" {
     most_recent = true
-    owners      = ["amazon"]
 
     filter {
-        name   = "owner-alias"
-        values = ["amazon"]
+        name   = "virtualization-type"
+        values = ["hvm"]
     }
+
 
     filter {
         name   = "name"
         values = ["ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-20230516-*"]
     }
 
+     owners = ["376227379200"]
 }
 
 
