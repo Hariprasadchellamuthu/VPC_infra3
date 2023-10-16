@@ -229,7 +229,7 @@ resource "aws_instance" "public_instance" {
 }
 
 output "jenkins_url" {
-  value = join ("", ["http://", aws_instance.public_instance.public_ip, ":", "8080"])
+      value = join ("", ["http://", aws_instance.public_instance.public_ip, ":", "8080"])
 }
 
 # Create an EC2 instance in the private subnet
