@@ -214,7 +214,7 @@ resource "aws_instance" "public_instance" {
     }
 
     provisioner "file" {
-      source      = "/jk/Scripts/install_jen.sh
+      source      = "/jk/Scripts/install_jen.sh"
       destination = "/tmp/install_jen.sh"
   }
 
