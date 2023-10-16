@@ -209,11 +209,11 @@ resource "aws_instance" "public_instance" {
       type     = "ssh"
       user     = "ubuntu"  # The default username for Ubuntu instances
       host     = aws_instance.public_instance.public_ip
-      private_key = file("home/ubuntu/.ssh/authorized_keys")  # Replace with your private key file
+      private_key = file("/home/ec2-user/PEM/PK1.pem")  # Replace with your private key file
     }
 
     provisioner "file" {
-      source      = "/jk/Scripts/install_jen.sh"
+      source      = "/home/ec2-user/Scripts/install_jen.sh"
       destination = "/tmp/install_jen.sh"
   }
 
