@@ -198,7 +198,7 @@ data "aws_ami" "ubuntu" {
 
 # Create an EC2 instance in the public subnet
 resource "aws_instance" "public_instance" {
-  ami           = aws_ami.ubuntu.id
+  ami           = data.aws_ami.ubuntu.id
   instance_type = "t2.micro"
   subnet_id     = aws_subnet.public_subnets[0].id # Change to the desired public subnet index
   security_groups = [aws_security_group.public_sg.id]
