@@ -183,7 +183,7 @@ data "aws_ami" "ubuntu" {
     owners      = ["amazon"]
 
     filter {
-        name   = "owners-alias"
+        name   = "owner-alias"
         values = ["amazon"]
     }
 
