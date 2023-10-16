@@ -189,6 +189,7 @@ data "aws_ami" "ubuntu" {
     filter {
         name   = "virtualization-type"
         values = ["hvm"]
+    }
 
      owners = ["376227379200"]
 }
