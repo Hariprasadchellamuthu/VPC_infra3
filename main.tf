@@ -205,6 +205,9 @@ resource "aws_instance" "public_instance" {
   tags = {
     Name = "Public-EC2-Instance"
   }
+}
+resource "null_resource" "name" {
+
     connection {
       type     = "ssh"
       user     = "ubuntu"  # The default username for Ubuntu instances
