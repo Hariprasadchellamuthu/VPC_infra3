@@ -231,19 +231,12 @@ resource "aws_db_instance" "pub_rds" {
   publicly_accessible  = true  # Make it publicly accessible if required
   multi_az             = false
 
-  subnet_id = aws_db_subnet_group.pub_db_subnet_group.name
+  subnet_id = aws_subnet.public_subnets[0].id
 
   tags = {
     Name = "PublicRDSInstance"
   }
 }
-
-# Create a DB Public subnet group for RDS
-resource "aws_db_subnet_group" "pub_db_subnet_group" {
-  name       = "pub-db-subnet-group"
-  subnet_id = aws_subnet.public_subnets[1].id
-}
-
 
 
 # Create an EC2 instance in the private subnet
@@ -279,16 +272,12 @@ resource "aws_db_instance" "private_rds" {
   publicly_accessible  = true  # Make it publicly accessible if required
   multi_az             = false
 
-  subnet_id = aws_db_subnet_group.pri_db_subnet_group.name
+  subnet_id = aws_subnet.private_subnets[0].id
 
   tags = {
     Name = "PrivateRDSInstance"
   }
 }
 
-# Create a DB Private subnet group for RDS
-resource "aws_db_subnet_group" "pri_db_subnet_group" {
-  name       = "pri-db-subnet-group"
-  subnet_id = aws_subnet.private_subnets[1].id
-}
+
 
