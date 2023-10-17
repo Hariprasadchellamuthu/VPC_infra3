@@ -218,6 +218,7 @@ locals {
 # Create an RDS instance if there are two public subnets
 resource "aws_db_instance" "pub_rds" {
   count       = local.num_public_subnets == 2 ? 1 : 0  # Create only if there are two public subnets
+  subnet_ids = aws_subnet.public_subnets[0].id
   allocated_storage    = 20
   storage_type         = "gp2"
   engine               = "mysql"
@@ -230,8 +231,6 @@ resource "aws_db_instance" "pub_rds" {
   skip_final_snapshot  = true
   publicly_accessible  = true  # Make it publicly accessible if required
   multi_az             = false
-
-  subnet_id = aws_subnet.public_subnets[0].id
 
   tags = {
     Name = "PublicRDSInstance"
@@ -259,6 +258,7 @@ locals {
 # Create an RDS instance if there are two public subnets
 resource "aws_db_instance" "private_rds" {
   count       = local.num_private_subnets == 2 ? 1 : 0  # Create only if there are two public subnets
+  subnet_ids = aws_subnet.private_subnets[1].id
   allocated_storage    = 20
   storage_type         = "gp2"
   engine               = "mysql"
@@ -271,8 +271,6 @@ resource "aws_db_instance" "private_rds" {
   skip_final_snapshot  = true
   publicly_accessible  = true  # Make it publicly accessible if required
   multi_az             = false
-
-  subnet_id = aws_subnet.private_subnets[0].id
 
   tags = {
     Name = "PrivateRDSInstance"
