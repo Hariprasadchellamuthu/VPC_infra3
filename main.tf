@@ -223,7 +223,7 @@ resource "aws_db_instance" "pub_rds" {
   engine               = "mysql"
   engine_version       = "5.7"
   instance_class       = "db.t2.micro"
-  name                 = "pubdatabase"
+  identifier                 = "pubdatabase"
   username             = "pubuser"
   password             = "pubpassword"
   parameter_group_name = "default.mysql5.7"
@@ -231,7 +231,7 @@ resource "aws_db_instance" "pub_rds" {
   publicly_accessible  = true  # Make it publicly accessible if required
   multi_az             = false
 
-  subnet_group_name = aws_db_subnet_group.pub_db_subnet_group.name
+  subnet_ids = aws_db_subnet_group.pub_db_subnet_group.name
 
   tags = {
     Name = "PublicRDSInstance"
@@ -271,7 +271,7 @@ resource "aws_db_instance" "private_rds" {
   engine               = "mysql"
   engine_version       = "5.7"
   instance_class       = "db.t2.micro"
-  name                 = "mydatabase"
+  identifier                 = "mydatabase"
   username             = "priuser"
   password             = "pripassword"
   parameter_group_name = "default.mysql5.7"
@@ -279,7 +279,7 @@ resource "aws_db_instance" "private_rds" {
   publicly_accessible  = true  # Make it publicly accessible if required
   multi_az             = false
 
-  subnet_group_name = aws_db_subnet_group.pri_db_subnet_group.name
+  subnet_ids = aws_db_subnet_group.pri_db_subnet_group.name
 
   tags = {
     Name = "PrivateRDSInstance"
