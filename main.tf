@@ -31,12 +31,14 @@ resource "aws_vpc" "my_vpc" {
   }
 }
 
+# Create a IGW
+
 resource "aws_internet_gateway" "ik" {
   vpc_id = aws_vpc.my_vpc.id
   
 }
 
-
+# create a Public subnets
 resource "aws_subnet" "public_subnets" {
  count             = length(var.public_subnet_cidrs)
  vpc_id            = aws_vpc.my_vpc.id
@@ -49,6 +51,7 @@ resource "aws_subnet" "public_subnets" {
  }
 }
 
+# create a Private subnets
 resource "aws_subnet" "private_subnets" {
  count             = length(var.private_subnet_cidrs)
  vpc_id            = aws_vpc.my_vpc.id
@@ -206,28 +209,33 @@ resource "aws_instance" "public_instance" {
     Name = "Public-EC2-Instance"
   }
 }
-resource "null_resource" "name" {
 
-    connection {
-      type     = "ssh"
-      user     = "ubuntu"  # The default username for Ubuntu instances
-      host     = aws_instance.public_instance.public_ip
-      private_key = file("/home/ubuntu/PEM/PK1.pem")  # Replace with your private key file
-    }
+# Determine the number of public subnets
+locals {
+  num_public_subnets = length(var.public_subnet_cidrs)
+}
 
-    provisioner "file" {
-      source      = "/home/ubuntu/Scripts/install_jen.sh"
-      destination = "/tmp/install_jen.sh"
+# Create an RDS instance if there are two public subnets
+resource "aws_db_instance" "my_rds" {
+  count       = local.num_public_subnets == 2 ? 1 : 0  # Create only if there are two public subnets
+  allocated_storage    = 20
+  storage_type         = "gp2"
+  engine               = "mysql"
+  engine_version       = "5.7"
+  instance_class       = "db.t2.micro"
+  name                 = "mydatabase"
+  username             = "myuser"
+  password             = "mypassword"
+  parameter_group_name = "default.mysql5.7"
+  skip_final_snapshot  = true
+  publicly_accessible  = true  # Make it publicly accessible if required
+  multi_az             = false
+
+  subnet_group_name = aws_db_subnet_group.my_db_subnet_group.name
+
+  tags = {
+    Name = "PublicRDSInstance"
   }
-
-    provisioner "remote-exec" {
-      inline = [
-          "sudo chmod +x /tmp/install_jen.sh",
-          "sh /tmp/install_jen.sh"
-      ]
-    }
-
-    depends_on = [aws_instance.public_instance]  
 }
 
 
@@ -244,6 +252,31 @@ resource "aws_instance" "private_instance" {
 
 }
 
-output "jenkins_url" {
-      value = join ("", ["http://", aws_instance.public_instance.public_ip, ":", "8080"])
+# Determine the number of public subnets
+locals {
+  num_private_subnets = length(var.private_subnet_cidrs)
 }
+
+# Create an RDS instance if there are two public subnets
+resource "aws_db_instance" "my_rds" {
+  count       = local.num_private_subnets == 2 ? 1 : 0  # Create only if there are two public subnets
+  allocated_storage    = 20
+  storage_type         = "gp2"
+  engine               = "mysql"
+  engine_version       = "5.7"
+  instance_class       = "db.t2.micro"
+  name                 = "mydatabase"
+  username             = "myuser"
+  password             = "mypassword"
+  parameter_group_name = "default.mysql5.7"
+  skip_final_snapshot  = true
+  publicly_accessible  = true  # Make it publicly accessible if required
+  multi_az             = false
+
+  subnet_group_name = aws_db_subnet_group.my_db_subnet_group.name
+
+  tags = {
+    Name = "PrivateRDSInstance"
+  }
+}
+
