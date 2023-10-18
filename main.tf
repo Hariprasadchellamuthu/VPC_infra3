@@ -27,7 +27,7 @@ variable "azs" {
 resource "aws_db_subnet_group" "public_db_subnet" {
   name        = "mysql-rds-public-subnet-group"
   description = "Public subnets for RDS instance"
-  subnet_ids = (aws_subnet.public_subnets.*.id)
+  subnet_ids = (aws_subnet.public_subnets.1.id)
 }
 
 
@@ -35,7 +35,7 @@ resource "aws_db_subnet_group" "public_db_subnet" {
 resource "aws_db_subnet_group" "private_db_subnet" {
   name        = "mysql-rds-private-subnet-group"
   description = "Private subnets for RDS instance"
-  subnet_ids = (aws_subnet.private_subnets.*.id)
+  subnet_ids = (aws_subnet.private_subnets.1.id)
 }
 
 # Create a VPC as per our given CIDR block
@@ -94,14 +94,14 @@ resource "aws_route_table" "public" {
 # Associate each public subnet with its route table
 resource "aws_route_table_association" "public_subnet_association" {
   count        = length(var.public_subnet_cidrs)
-  subnet_id    = element(aws_subnet.public_subnets.[1].id, count.index)
+  subnet_id    = element(aws_subnet.public_subnets.*.id, count.index)
   route_table_id = aws_route_table.public.id
 }
 
 # Create a NAT gateway for each public subnet
 resource "aws_nat_gateway" "my_nat_gateway" {
   allocation_id = aws_eip.my_eip.id
-  subnet_id     = element(aws_subnet.public_subnets.[1].id, 0)
+  subnet_id     = element(aws_subnet.public_subnets.*.id, 0)
 
 tags = {
   Name = "nat"
