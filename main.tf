@@ -27,7 +27,7 @@ variable "azs" {
 resource "aws_db_subnet_group" "public_db_subnet" {
   name        = "mysql-rds-public-subnet-group"
   description = "Public subnets for RDS instance"
-  subnet_ids = [aws_subnet.public_subnets[(*-1)].id]
+  subnet_ids = aws_subnet.public_subnets[1].id
 }
 
 
@@ -35,7 +35,7 @@ resource "aws_db_subnet_group" "public_db_subnet" {
 resource "aws_db_subnet_group" "private_db_subnet" {
   name        = "mysql-rds-private-subnet-group"
   description = "Private subnets for RDS instance"
-  subnet_ids = [aws_subnet.private_subnets[(*-1)].id]
+  subnet_ids = aws_subnet.private_subnets[1].id
 }
 
 # Create a VPC as per our given CIDR block
