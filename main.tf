@@ -41,6 +41,8 @@ resource "aws_db_subnet_group" "private_db_subnet" {
 # Create a VPC as per our given CIDR block
 resource "aws_vpc" "my_vpc" {
   cidr_block = var.vpc_cidr_block
+  enable_dns_support   = true
+  enable_dns_hostnames = true
 
   tags = {
     Name = "VPC_Pro"
