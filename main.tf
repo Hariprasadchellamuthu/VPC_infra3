@@ -36,7 +36,7 @@ resource "aws_db_subnet_group" "private_db_subnet" {
   name        = "mysql-rds-private-subnet-group"
   description = "Private subnets for RDS instance"
   subnet_ids = (aws_subnet.private_subnets.*.id)
-}0
+}
 
 # Create a VPC as per our given CIDR block
 resource "aws_vpc" "my_vpc" {
