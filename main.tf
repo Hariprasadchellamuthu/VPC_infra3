@@ -218,7 +218,7 @@ locals {
 # Create an RDS instance if there are two public subnets
 resource "aws_db_instance" "pub_rds" {
   count       = local.num_public_subnets == 2 ? 1 : 0  # Create only if there are two public subnets
-  subnet_ids = aws_subnet.public_subnets[0].id
+  subnet_ids = aws_subnet.public_subnets[1].id
   allocated_storage    = 20
   storage_type         = "gp2"
   engine               = "mysql"
