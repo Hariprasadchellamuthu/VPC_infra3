@@ -23,6 +23,22 @@ variable "azs" {
  default     = ["us-east-1a", "us-east-1b", "us-east-1c"]
 }
 
+# RDS Public Subnet Group
+resource "aws_db_subnet_group" "public_db_subnet" {
+  name        = "mysql-rds-public-subnet-group"
+  description = "Public subnets for RDS instance"
+  subnet_ids = ["${aws_subnet.public_subnets[1].id}"]
+}
+
+
+# RDS Private Subnet Group
+resource "aws_db_subnet_group" "private_db_subnet" {
+  name        = "mysql-rds-private-subnet-group"
+  description = "Private subnets for RDS instance"
+  subnet_ids = ["${aws_subnet.private_subnets[1].id}"]
+}
+
+# Create a VPC as per our given CIDR block
 resource "aws_vpc" "my_vpc" {
   cidr_block = var.vpc_cidr_block
 
@@ -223,10 +239,11 @@ resource "aws_db_instance" "pub_rds" {
   engine               = "mysql"
   engine_version       = "5.7"
   instance_class       = "db.t2.micro"
-  identifier                 = "pubdatabase"
+  identifier           = "pubdatabase"
   username             = "pubuser"
   password             = "pubpassword"
   parameter_group_name = "default.mysql5.7"
+  db_subnet_group_name = aws_db_subnet_group.public_db_subnet.name
   skip_final_snapshot  = true
   publicly_accessible  = true  # Make it publicly accessible if required
   multi_az             = false
@@ -262,10 +279,11 @@ resource "aws_db_instance" "private_rds" {
   engine               = "mysql"
   engine_version       = "5.7"
   instance_class       = "db.t2.micro"
-  identifier                 = "mydatabase"
+  identifier           = "pridatabase"
   username             = "priuser"
   password             = "pripassword"
   parameter_group_name = "default.mysql5.7"
+  db_subnet_group_name = aws_db_subnet_group.private_db_subnet.name
   skip_final_snapshot  = true
   publicly_accessible  = true  # Make it publicly accessible if required
   multi_az             = false
