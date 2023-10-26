@@ -264,9 +264,11 @@ resource "aws_db_instance" "private_rds" {
   tags = {
     Name = "PrivateRDSInstance"
   }
-}
 
 output "aws_db_instance_private_rds" {
   value = data.aws_db_instance.private_rds
 }
+}
+
+
 
