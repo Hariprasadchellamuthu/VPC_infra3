@@ -265,10 +265,11 @@ resource "aws_db_instance" "private_rds" {
     Name = "PrivateRDSInstance"
   }
 
-output "aws_db_instance_private_rds" {
-  value = data.aws_db_instance.private_rds
-}
+
 }
 
+output "aws_db_instance_private_rds" {
+  value = aws_db_instance.private_rds
+}
 
 
