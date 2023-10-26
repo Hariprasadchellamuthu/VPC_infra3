@@ -215,7 +215,6 @@ locals {
 
 # Create an RDS instance if there are two public subnets
 resource "aws_db_instance" "private_rds" {
-  count       = local.num_private_subnets
   allocated_storage    = 20
   storage_type         = "gp2"
   engine               = "mysql"
