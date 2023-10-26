@@ -214,10 +214,15 @@ data "aws_ami" "ubuntu22" {
   }
 }
 
+# Determine the number of public subnets
+locals {
+  num_public_subnets = length(var.public_subnet_cidrs)
+}
 
 
 # Create an EC2 instance in the public subnet
 resource "aws_instance" "public_instance" {
+  count       = local.num_public_subnets
   ami           = data.aws_ami.ubuntu22.id
   instance_type = "t2.micro"
   subnet_id     = aws_subnet.public_subnets[0].id # Change to the desired public subnet index
@@ -228,45 +233,6 @@ resource "aws_instance" "public_instance" {
   }
 }
 
-# Determine the number of public subnets
-locals {
-  num_public_subnets = length(var.public_subnet_cidrs)
-}
-
-# Create an RDS instance if there are two public subnets
-resource "aws_db_instance" "pub_rds" {
-  count       = local.num_public_subnets == 2 ? 1 : 0  # Create only if there are two public subnets
-  allocated_storage    = 20
-  storage_type         = "gp2"
-  engine               = "mysql"
-  engine_version       = "5.7"
-  instance_class       = "db.t2.micro"
-  identifier           = "pubdatabase"
-  username             = "pubuser"
-  password             = "pubpassword"
-  parameter_group_name = "default.mysql5.7"
-  db_subnet_group_name = aws_db_subnet_group.public_db_subnet.name
-  skip_final_snapshot  = true
-  publicly_accessible  = true  # Make it publicly accessible if required
-  multi_az             = false
-
-  tags = {
-    Name = "PublicRDSInstance"
-  }
-}
-
-
-# Create an EC2 instance in the private subnet
-resource "aws_instance" "private_instance" {
-  ami           = "ami-053b0d53c279acc90" # Change to your desired AMI
-  instance_type = "t2.micro"
-  subnet_id     = aws_subnet.private_subnets[0].id # Change to the desired private subnet index
-  security_groups = [aws_security_group.private_sg.id]
-  tags = {
-    Name = "Private-EC2-Instance"
-  }
-
-}
 
 # Determine the number of public subnets
 locals {
@@ -275,7 +241,7 @@ locals {
 
 # Create an RDS instance if there are two public subnets
 resource "aws_db_instance" "private_rds" {
-  count       = local.num_private_subnets == 2 ? 1 : 0  # Create only if there are two public subnets
+  count       = local.num_private_subnets
   allocated_storage    = 20
   storage_type         = "gp2"
   engine               = "mysql"
