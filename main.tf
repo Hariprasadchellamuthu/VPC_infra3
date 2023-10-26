@@ -239,12 +239,11 @@ resource "aws_db_instance" "private_rds" {
   engine               = "mysql"
   engine_version       = "5.7"
   instance_class       = "db.t2.micro"
-  subnet_id     = aws_subnet.private_subnets[0].id
   identifier           = "pridatabase"
   username             = "priuser"
   password             = "pripassword"
   parameter_group_name = "default.mysql5.7"
-  #db_subnet_group_name = aws_db_subnet_group.private_db_subnet.name
+  db_subnet_group_name = aws_db_subnet_group.private_db_subnet.name
   skip_final_snapshot  = true
   publicly_accessible  = true  # Make it publicly accessible if required
   multi_az             = false
