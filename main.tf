@@ -23,14 +23,6 @@ variable "azs" {
  default     = ["us-east-1a", "us-east-1b", "us-east-1c"]
 }
 
-# RDS Public Subnet Group
-resource "aws_db_subnet_group" "public_db_subnet" {
-  name        = "mysql-rds-public-subnet-group"
-  description = "Public subnets for RDS instance"
-  subnet_ids = (aws_subnet.public_subnets.*.id)
-}
-
-
 # RDS Private Subnet Group
 resource "aws_db_subnet_group" "private_db_subnet" {
   name        = "mysql-rds-private-subnet-group"
