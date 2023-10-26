@@ -212,6 +212,24 @@ resource "aws_instance" "public_instance" {
   tags = {
     Name = "Public-EC2-Instance"
   }
+  user_data = <<-EOF
+  #!/bin/bash
+  sudo apt-get update
+  sudo apt-get install -y apache2 php
+  sudo service apache2 start
+
+  # Place your web application code here
+  # Example: Copy your code from a Git repository
+  sudo apt-get install -y git
+  git clone https://github.com/Hariprasadchellamuthu/web_app_code.git /var/www/html
+
+  # Configure your web application to connect to the RDS instance
+  # Update database credentials, hostname, and database name
+  sed -i 's/DB_HOST/your_rds_hostname/g' /var/www/html/config.php
+  sed -i 's/DB_NAME/pridatabase/g' /var/www/html/config.php
+  sed -i 's/DB_USER/priuser/g' /var/www/html/config.php
+  sed -i 's/DB_PASSWORD/pripassword/g' /var/www/html/config.php
+  EOF
 }
 
 
