@@ -173,24 +173,6 @@ resource "aws_security_group" "public_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
-
-resource "aws_security_group" "private_sg" {
-  name        = "private-sg"
-  description = "Security group for private instances"
-  vpc_id      = aws_vpc.my_vpc.id
-
-  # Define inbound and outbound rules as needed
-  # Example: Allow outbound traffic to the internet
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  # Add more rules as needed
-}
-
 data "aws_ami" "ubuntu22" {
   most_recent = true
   owners      = ["amazon"]
