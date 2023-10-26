@@ -223,14 +223,21 @@ resource "aws_instance" "public_instance" {
   sudo apt-get install -y git
   git clone https://github.com/Hariprasadchellamuthu/web_app_code.git /var/www/html
 
+  # Fetch RDS endpoint and configure web application
+  RDS_ENDPOINT=$(terraform output -json aws_db_instance_private_rds | jq -r '..*.endpoint')
   # Configure your web application to connect to the RDS instance
   # Update database credentials, hostname, and database name
-  sed -i 's/DB_HOST/your_rds_hostname/g' /var/www/html/config.php
+  sed -i 's/DB_HOST/\$RDS_ENDPOINT/g' /var/www/html/config.php
   sed -i 's/DB_NAME/pridatabase/g' /var/www/html/config.php
   sed -i 's/DB_USER/priuser/g' /var/www/html/config.php
   sed -i 's/DB_PASSWORD/pripassword/g' /var/www/html/config.php
   EOF
+
+#EC2 instance is created after the RDS instance 
+depends_on = [aws_db_instance.private_rds]
 }
+
+
 
 
 # Determine the number of public subnets
@@ -258,3 +265,8 @@ resource "aws_db_instance" "private_rds" {
     Name = "PrivateRDSInstance"
   }
 }
+
+output "aws_db_instance_private_rds" {
+  value = data.aws_db_instance.private_rds
+}
+
