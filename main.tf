@@ -206,7 +206,7 @@ resource "aws_instance" "public_instance" {
   count       = local.num_public_subnets
   ami           = data.aws_ami.ubuntu22.id
   instance_type = "t2.micro"
-  subnet_id     = aws_subnet.public_subnets[0].id # Change to the desired public subnet index
+  subnet_id     = aws_subnet.public_subnets[count.index].id # Change to the desired public subnet index
   security_groups = [aws_security_group.public_sg.id]
   key_name        = "PK1"
   tags = {
@@ -218,6 +218,7 @@ resource "aws_instance" "public_instance" {
 }
 
 resource "null_resource" "name" {
+    count = local.num_public_subnets
 
     connection {
       type     = "ssh"
