@@ -239,7 +239,7 @@ resource "null_resource" "name" {
       ]
     }
 
-    depends_on = [aws_instance.public_instance]  
+    depends_on = [aws_instance.public_instance[count.index]]  
 }
 
 
