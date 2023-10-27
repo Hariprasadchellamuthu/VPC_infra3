@@ -223,7 +223,7 @@ resource "null_resource" "name" {
     connection {
       type     = "ssh"
       user     = "ubuntu"  # The default username for Ubuntu instances
-      host     = aws_instance.public_instance.public_ip
+      host     = aws_instance.public_instance[count.index].public_ip
       private_key = file("/home/ubuntu/PEM/PK1.pem")  # Replace with your private key file
     }
 
