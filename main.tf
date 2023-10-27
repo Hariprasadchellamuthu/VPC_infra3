@@ -231,10 +231,13 @@ resource "aws_instance" "public_instance" {
   sed -i 's/DB_NAME/pridatabase/g' /var/www/html/config.php
   sed -i 's/DB_USER/priuser/g' /var/www/html/config.php
   sed -i 's/DB_PASSWORD/pripassword/g' /var/www/html/config.php
+
+    # Restart Apache to apply changes
+  sudo service apache2 restart
   EOF
 
 #EC2 instance is created after the RDS instance 
-depends_on = [aws_db_instance.private_rds]
+  depends_on = [aws_db_instance.private_rds]
 }
 
 
