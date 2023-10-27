@@ -229,7 +229,6 @@ resource "null_resource" "name" {
     provisioner "file" {
       source      = "/home/ubuntu/Scripts/install_jen.sh"
       destination = "/tmp/install_jen.sh"
-      RDS_ENDPOINT = $(terraform output -json aws_db_instance_private_rds | jq -r '..*.endpoint')
   }
 
     provisioner "remote-exec" {
