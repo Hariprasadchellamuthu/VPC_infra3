@@ -235,6 +235,7 @@ resource "null_resource" "name" {
     provisioner "remote-exec" {
       inline = [
           "sudo chmod +x /tmp/install_jen.sh",
+          "RDS_ENDPOINT=$(terraform output -json aws_db_instance_private_rds | jq -r '..*.endpoint')",
           "sh /tmp/install_jen.sh"
       ]
     }
