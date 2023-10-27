@@ -212,32 +212,34 @@ resource "aws_instance" "public_instance" {
   tags = {
     Name = "Public-EC2-Instance"
   }
-  user_data = <<-EOF
-  #!/bin/bash
-  sudo apt-get update
-  sudo apt-get install -y apache2 php
-  sudo service apache2 start
-
-  # Place your web application code here
-  # Example: Copy your code from a Git repository
-  sudo apt-get install -y git
-  git clone https://github.com/Hariprasadchellamuthu/web_app_code.git /var/www/html
-
-  # Fetch RDS endpoint and configure web application
-  RDS_ENDPOINT=$(terraform output -json aws_db_instance_private_rds | jq -r '..*.endpoint')
-  # Configure your web application to connect to the RDS instance
-  # Update database credentials, hostname, and database name
-  sed -i 's/DB_HOST/\$RDS_ENDPOINT/g' /var/www/html/config.php
-  sed -i 's/DB_NAME/pridatabase/g' /var/www/html/config.php
-  sed -i 's/DB_USER/priuser/g' /var/www/html/config.php
-  sed -i 's/DB_PASSWORD/pripassword/g' /var/www/html/config.php
-
-    # Restart Apache to apply changes
-  sudo service apache2 restart
-  EOF
 
 #EC2 instance is created after the RDS instance 
   depends_on = [aws_db_instance.private_rds]
+}
+
+resource "null_resource" "name" {
+
+    connection {
+      type     = "ssh"
+      user     = "ubuntu"  # The default username for Ubuntu instances
+      host     = aws_instance.public_instance.public_ip
+      private_key = file("/home/ubuntu/PEM/PK1.pem")  # Replace with your private key file
+    }
+
+    provisioner "file" {
+      source      = "/home/ubuntu/Scripts/install_jen.sh"
+      destination = "/tmp/install_jen.sh"
+      RDS_ENDPOINT = $(terraform output -json aws_db_instance_private_rds | jq -r '..*.endpoint')
+  }
+
+    provisioner "remote-exec" {
+      inline = [
+          "sudo chmod +x /tmp/install_jen.sh",
+          "sh /tmp/install_jen.sh"
+      ]
+    }
+
+    depends_on = [aws_instance.public_instance]  
 }
 
 
