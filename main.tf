@@ -201,22 +201,6 @@ locals {
 }
 
 
-# Create an EC2 instance in the public subnet
-resource "aws_instance" "public_instance" {
-  count       = local.num_public_subnets
-  ami           = data.aws_ami.ubuntu22.id
-  instance_type = "t2.micro"
-  subnet_id     = aws_subnet.public_subnets[count.index].id # Change to the desired public subnet index
-  security_groups = [aws_security_group.public_sg.id]
-  key_name        = "PK1"
-  tags = {
-    Name = "Public-EC2-Instance"
-  }
-
-#EC2 instance is created after the RDS instance 
-  depends_on = [aws_db_instance.private_rds]
-}
-
 resource "null_resource" "name" {
     count = local.num_public_subnets
 
@@ -230,7 +214,7 @@ resource "null_resource" "name" {
     provisioner "file" {
       source      = "/home/ubuntu/Scripts/install_jen.sh"
       destination = "/tmp/install_jen.sh"
-  }
+    }
 
     provisioner "remote-exec" {
       inline = [
@@ -240,8 +224,9 @@ resource "null_resource" "name" {
       ]
     }
 
-    depends_on = [aws_instance.public_instance[count.index]]  
+    depends_on = [aws_instance.public_instance[count.index]]
 }
+
 
 
 
