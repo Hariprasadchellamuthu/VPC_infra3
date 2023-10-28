@@ -235,7 +235,7 @@ resource "null_resource" "name" {
       inline = [
           "sudo chmod +x /tmp/install_jen.sh",
           "RDS_ENDPOINT=$(terraform output -json aws_db_instance_private_rds | jq -r '..*.endpoint')",
-          "sh /tmp/install_jen.sh"
+          "sudo sh /tmp/install_jen.sh"
       ]
     }
 }
