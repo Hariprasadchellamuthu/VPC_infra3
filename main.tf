@@ -223,8 +223,6 @@ resource "null_resource" "name" {
           "sh /tmp/install_jen.sh"
       ]
     }
-
-    depends_on = [aws_instance.public_instance[count.index]]
 }
 
 
