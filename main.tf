@@ -100,17 +100,13 @@ resource "aws_nat_gateway" "my_nat_gateway" {
 tags = {
   Name = "nat"
   }
+depends_on = [aws_eip.my_eip]
 }
 
 # Create an Elastic
 resource "aws_eip" "my_eip" {
   domain     = "vpc"
   depends_on = [aws_internet_gateway.ik]
-}
-# Create an Elastic2
-resource "aws_eip" "my_eip2" {
-  instance = aws_nat_gateway.my_nat_gateway.id
-  vpc      = true
 }
 
 # Create a route table for the private subnets (for routing through the NAT gateways)
