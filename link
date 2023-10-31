@@ -1,1 +1,18 @@
-https://github.com/Hariprasadchellamuthu/web_app_code/tree/main
+trigger:
+- main  # Define the branch you want to trigger the pipeline on
+
+pr: none  # Disable PR triggers for this example
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- script: |
+    git config --global user.email "your-email@example.com"
+    git config --global user.name "Your Name"
+    git clone https://github.com/yourusername/yourgithubrepo.git
+    cd yourgithubrepo
+    git remote add azure-devops https://dev.azure.com/yourorganization/yourproject/_git/yourazuredevopsrepo
+    git push azure-devops --all
+    git push azure-devops --tags
+  displayName: 'Mirror Code to Azure DevOps'
