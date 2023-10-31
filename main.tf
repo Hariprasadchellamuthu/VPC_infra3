@@ -23,12 +23,7 @@ variable "azs" {
  default     = ["us-east-1a", "us-east-1b", "us-east-1c"]
 }
 
-# RDS Private Subnet Group
-resource "aws_db_subnet_group" "private_db_subnet" {
-  name        = "mysql-rds-private-subnet-group"
-  description = "Private subnets for RDS instance"
-  subnet_ids = (aws_subnet.private_subnets.*.id)
-}
+
 
 # Create a VPC as per our given CIDR block
 resource "aws_vpc" "my_vpc" {
@@ -71,6 +66,13 @@ resource "aws_subnet" "private_subnets" {
  tags = {
    Name = "${element(var.azs, count.index)}}-private-subnet"
  }
+}
+
+# RDS Private Subnet Group
+resource "aws_db_subnet_group" "private_db_subnet" {
+  name        = "mysql-rds-private-subnet-group"
+  description = "Private subnets for RDS instance"
+  subnet_ids = aws_subnet.private_subnets.[*].id
 }
 
 # Create a route table for the public subnets
