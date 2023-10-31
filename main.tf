@@ -107,6 +107,11 @@ resource "aws_eip" "my_eip" {
   domain     = "vpc"
   depends_on = [aws_internet_gateway.ik]
 }
+# Create an Elastic2
+resource "aws_eip" "my_eip" {
+  instance = aws_nat_gateway.my_nat_gateway.id
+  vpc      = true
+}
 
 # Create a route table for the private subnets (for routing through the NAT gateways)
 resource "aws_route_table" "private" {
