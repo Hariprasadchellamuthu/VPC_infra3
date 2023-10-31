@@ -108,7 +108,7 @@ resource "aws_eip" "my_eip" {
   depends_on = [aws_internet_gateway.ik]
 }
 # Create an Elastic2
-resource "aws_eip" "my_eip" {
+resource "aws_eip" "my_eip2" {
   instance = aws_nat_gateway.my_nat_gateway.id
   vpc      = true
 }
