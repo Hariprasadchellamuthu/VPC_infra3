@@ -239,6 +239,8 @@ resource "null_resource" "name" {
     provisioner "remote-exec" {
       inline = [
           "sudo chmod +x /tmp/install_jen.sh",
+          "export PATH=$PATH:/usr/local/bin:/usr/bin",
+          "WEB_ROOT="/var/www/html"",
           "RDS_ENDPOINT=$(/usr/local/bin/terraform output -json aws_db_instance_private_rds | /usr/bin/jq -r '..*.endpoint')",
           "sudo sh /tmp/install_jen.sh"
       ]
@@ -284,7 +286,6 @@ resource "aws_db_instance" "private_rds" {
 
 output "aws_db_instance_private_rds" {
   value = aws_db_instance.private_rds
-  sensitive = true
 }
 
 
