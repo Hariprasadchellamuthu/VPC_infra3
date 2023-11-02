@@ -68,12 +68,7 @@ resource "aws_subnet" "private_subnets" {
  }
 }
 
-# RDS Private Subnet Group
-resource "aws_db_subnet_group" "private_db_subnet" {
-  name        = "mysql-rds-private-subnet-group"
-  description = "Private subnets for RDS instance"
-  subnet_ids = aws_subnet.private_subnets[*].id
-}
+
 
 # Create a route table for the public subnets
 resource "aws_route_table" "public" {
@@ -243,7 +238,12 @@ resource "null_resource" "name" {
     }
 }
 
-
+# RDS Private Subnet Group
+resource "aws_db_subnet_group" "private_db_subnet" {
+  name        = "mysql-rds-private-subnet-group"
+  description = "Private subnets for RDS instance"
+  subnet_ids = aws_subnet.private_subnets[*].id
+}
 
 
 
