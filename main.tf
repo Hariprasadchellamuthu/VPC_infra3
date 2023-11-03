@@ -239,8 +239,6 @@ resource "null_resource" "name" {
     provisioner "remote-exec" {
       inline = [
           "sudo chmod +x /tmp/install_jen.sh",
-          "WEB_ROOT=/var/www/html",
-          "RDS_ENDPOINT=$(terraform output -raw rds_endpoint)",
           "sudo sh /tmp/install_jen.sh"
       ]
     }
