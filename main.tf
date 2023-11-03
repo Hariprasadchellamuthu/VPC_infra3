@@ -101,6 +101,7 @@ depends_on = [aws_eip.my_eip]
 # Create an Elastic
 resource "aws_eip" "my_eip" {
   domain     = "vpc"
+  instance = aws_instance.public_instance[0].id
   depends_on = [aws_internet_gateway.ik]
 }
 
