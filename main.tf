@@ -87,6 +87,12 @@ resource "aws_route_table_association" "public_subnet_association" {
   route_table_id = aws_route_table.public.id
 }
 
+# Create an Elastic
+resource "aws_eip" "my_eip" {
+  domain     = "vpc"
+  depends_on = [aws_internet_gateway.ik]
+}
+
 # Create a NAT gateway for each public subnet
 resource "aws_nat_gateway" "my_nat_gateway" {
   allocation_id = aws_eip.my_eip.id
@@ -98,12 +104,7 @@ tags = {
 depends_on = [aws_eip.my_eip]
 }
 
-# Create an Elastic
-resource "aws_eip" "my_eip" {
-  domain     = "vpc"
-  instance = aws_instance.public_instance[0].id
-  depends_on = [aws_internet_gateway.ik]
-}
+
 
 # Create a route table for the private subnets (for routing through the NAT gateways)
 resource "aws_route_table" "private" {
