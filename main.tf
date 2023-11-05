@@ -202,6 +202,10 @@ data "aws_ami" "ubuntu22" {
   }
 }
 
+output "rds_endpoint" {
+  value = aws_db_instance.private_rds.endpoint
+}
+
 # Determine the number of public subnets
 locals {
   num_public_subnets = length(var.public_subnet_cidrs)
@@ -283,8 +287,5 @@ resource "aws_db_instance" "private_rds" {
 
 }
 
-output "rds_endpoint" {
-  value = aws_db_instance.private_rds.endpoint
-}
 
 
