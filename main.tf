@@ -258,7 +258,28 @@ resource "aws_db_subnet_group" "private_db_subnet" {
   subnet_ids = aws_subnet.private_subnets[*].id
 }
 
+# Create a security group for RDS
+resource "aws_security_group" "rds_sg" {
+  name        = "rds-sg"
+  description = "Security group for RDS instance"
+  vpc_id      = aws_vpc.my_vpc.id
 
+  # Define an inbound rule to allow MySQL traffic (port 3306) from a specific IP or range
+  ingress {
+    from_port   = 3306
+    to_port     = 3306
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]  # You can specify a specific IP or range here for added security
+  }
+
+  # Egress (outbound) rules (if needed)
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"  # Allow all outbound traffic
+    cidr_blocks = ["0.0.0.0/0"]  # Allow traffic to all destinations (0.0.0.0/0)
+  }
+}
 
 # Determine the number of public subnets
 locals {
@@ -281,6 +302,8 @@ resource "aws_db_instance" "private_rds" {
   publicly_accessible  = true  # Make it publicly accessible if required
   multi_az             = false
 
+  # Associate the RDS instance with the security group
+  vpc_security_group_ids = [aws_security_group.rds_sg.id]
   tags = {
     Name = "PrivateRDSInstance"
   }
