@@ -245,7 +245,8 @@ resource "null_resource" "name" {
     provisioner "remote-exec" {
       inline = [
           "sudo chmod +x /tmp/install_jen.sh",
-          "export RDS_ENDPOINT=$(terraform output -raw rds_endpoint)",
+          "RDS_ENDPOINT=$(terraform output -raw rds_endpoint)",
+          "echo $RDS_ENDPOINT >> /tmp/rds_endpoint.txt",
           "sudo sh /tmp/install_jen.sh"
       ]
     }
