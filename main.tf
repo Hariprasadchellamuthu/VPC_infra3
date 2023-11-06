@@ -115,7 +115,7 @@ resource "aws_route_table" "private" {
   }
 }
 
-#Route for Internet Gateway:
+#Route for Internet Gateway and public route table:
 
 resource "aws_route" "public_internet_gateway" {
   route_table_id          = aws_route_table.public.id
