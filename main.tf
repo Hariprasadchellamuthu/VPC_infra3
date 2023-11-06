@@ -93,7 +93,7 @@ resource "aws_eip" "my_eip" {
   depends_on = [aws_internet_gateway.ik]
 }
 
-# Create a NAT gateway for each public subnet
+# Create a NAT gateway for each private subnet
 resource "aws_nat_gateway" "my_nat_gateway" {
   allocation_id = aws_eip.my_eip.id
   subnet_id     = element(aws_subnet.private_subnets.*.id, 0)
