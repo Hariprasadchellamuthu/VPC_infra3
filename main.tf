@@ -87,7 +87,7 @@ resource "aws_route_table_association" "public_subnet_association" {
   route_table_id = aws_route_table.public.id
 }
 
-# Create an Elastic
+# Create an Elastic IP
 resource "aws_eip" "my_eip" {
   domain     = "vpc"
   depends_on = [aws_internet_gateway.ik]
